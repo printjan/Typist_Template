@@ -477,15 +477,34 @@
   if todos.len() == 0 {
     text(style: "italic", fill: luma(120))[No open TODO items found.]
   } else {
+    let previous-chapter-loc = none
+    let first-chapter = true
     for m in todos {
       let num = m.value.num
       let desc = m.value.desc
       let loc = m.location()
-      let headings = query(selector(heading.where(level: 1)).before(loc)).filter(h => h.numbering != none)
+      let headings = query(selector(heading.where(level: 1)).before(loc))
+      let chapter = if headings.len() > 0 { headings.last() } else { none }
       let chapter-num = if headings.len() > 0 {
-        counter(heading).at(headings.last().location()).first()
+        counter(heading).at(chapter.location()).first()
       } else {
         0
+      }
+      let chapter-loc = if chapter != none { chapter.location() } else { none }
+      if first-chapter or chapter-loc != previous-chapter-loc {
+        let chapter-title = if chapter != none {
+          link(chapter.location(), chapter.body)
+        } else {
+          [Without chapter]
+        }
+        block(
+          width: 100%,
+          above: if first-chapter { 0pt } else { 6pt },
+          below: 2pt,
+          text(weight: "bold", chapter-title),
+        )
+        previous-chapter-loc = chapter-loc
+        first-chapter = false
       }
       let lbl = label("todo-" + str(num))
       grid(
