@@ -221,65 +221,65 @@ For mathematical and logical deductions, `#arrow-list` substitutes bullet glyphs
 
 ## Using This Repository as an Upstream Template
 
-Each notes repository can keep its own `origin` while tracking this repository through a second remote named `template`. This makes template updates available to every notes project without mixing up where project-specific changes are pushed.
+Each user repository can keep its own `origin` while tracking this repository through a second remote named `template`. This makes template updates available to every user project without mixing up where project-specific changes are pushed.
 
-### Recommended Setup for a New Notes Repository
+### Recommended Setup for a New User Repository
 
-Clone this repository so the notes project and the template start with shared Git history:
+- Clone this repository so your project and the template start with shared Git history:
 
-```bash
-git clone https://github.com/printjan/Typist_Template.git My_Notes
-cd My_Notes
-git remote rename origin template
-```
+  ```bash
+  git clone https://github.com/printjan/Typist_Template.git My_Notes
+  cd My_Notes
+  git remote rename origin template
+  ```
 
-Create a new, empty repository for the notes project on GitHub. Do not initialize it with a README, license, or `.gitignore`. Then connect and push the notes repository:
+- Create a new, empty repository for your project on GitHub. Do not initialize it with a README, license, or `.gitignore`. Then connect and push the notes repository:
 
-```bash
-git remote add origin git@github.com:YOUR-USER/My_Notes.git
-git push -u origin main
-```
+  ```bash
+  git remote add origin git@github.com:YOUR-USER/My_Notes.git
+  git push -u origin main
+  ```
 
-Use an HTTPS URL instead if preferred:
+- Use an HTTPS URL instead if preferred:
 
-```bash
-git remote add origin https://github.com/YOUR-USER/My_Notes.git
-```
+  ```bash
+  git remote add origin https://github.com/YOUR-USER/My_Notes.git
+  ```
 
-Confirm that both remotes are configured:
+- Confirm that both remotes are configured:
 
-```bash
-git remote -v
-```
+  ```bash
+  git remote -v
+  ```
 
 - `origin` is the notes project's repository.
 - `template` is this repository and supplies future template updates.
 
 ### Pulling Future Template Updates
 
-Run these commands inside each notes repository whenever template updates should be incorporated:
+- Run these commands inside each notes repository whenever template updates should be incorporated:
 
-```bash
-git fetch template
-git merge template/main
-git push origin main
-```
+  ```bash
+  git fetch template
+  git merge template/main
+  git push origin main
+  ```
 
-Git may ask you to resolve merge conflicts when both the notes project and the template changed the same lines. After resolving them, complete the merge and push it to the notes repository.
+- Git may ask you to resolve merge conflicts when both the notes project and the template changed the same lines. After resolving them, complete the merge and push it to the notes repository.
 
 ### Existing or GitHub-Generated Notes Repositories
 
-Repositories created with GitHub's **Use this template** button have independent Git history. Add this repository as a remote and allow unrelated histories during the first merge only:
+- Repositories created with GitHub's **Use this template** button have independent Git history. Add this repository as a remote and allow unrelated histories during the first merge only:
 
-```bash
-git remote add template https://github.com/printjan/Typist_Template.git
-git fetch template
-git merge template/main --allow-unrelated-histories
-```
+  ```bash
+  git remote add template https://github.com/printjan/Typist_Template.git
+  git fetch template
+  git merge template/main --allow-unrelated-histories
+  ```
 
-Resolve any first-merge conflicts and commit the result. All later updates use the normal update commands without `--allow-unrelated-histories`:
+- Resolve any first-merge conflicts and commit the result. All later updates use the normal update commands without `--allow-unrelated-histories`:
 
-```bash
-git fetch template
-git merge template/main
-```
+  ```bash
+  git fetch template
+  git merge template/main
+  ```
