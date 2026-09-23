@@ -4,6 +4,32 @@
 // Manage active profile via document state
 #let _current-profile = state("_current-profile", default-profile)
 
+// Resolve optional chapter preview IDs passed as --input chapters=id,...
+#let _requested-chapter-ids() = {
+  let raw = sys.inputs.at("chapters", default: "")
+  raw.split(",").map(id => id.trim()).filter(id => id != "")
+}
+
+// Include every declared chapter by default, or only requested preview chapters.
+#let include-chapters(chapters) = {
+  let selected = _requested-chapter-ids()
+  let available = chapters.map(chapter => chapter.id)
+  let unknown = selected.filter(id => id != "all" and id not in available)
+
+  if unknown.len() > 0 {
+    panic(
+      "Unknown chapter preview ID(s): " + unknown.join(", ")
+      + ". Available IDs: " + available.join(", ")
+    )
+  }
+
+  for chapter in chapters {
+    if selected.len() == 0 or "all" in selected or chapter.id in selected {
+      include chapter.path
+    }
+  }
+}
+
 // Generic container for framed callouts and admonitions
 #let framed(
   title: none,

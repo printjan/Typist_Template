@@ -1,5 +1,7 @@
 # Typst Technical Document & Cheatsheet Architecture
 
+> **Content attribution:** The document text depicted in this repository was authored by Prof. Jens Albrecht and is published here with his permission. The Typst implementation is licensed separately; see [`LICENSE`](LICENSE).
+
 A modular, profile-driven Typst framework engineered for high-density academic cheatsheets (*Klausur-Notizzettel*) and comprehensive technical summaries (*Zusammenfassungen*).
 
 ---
@@ -15,9 +17,49 @@ typst compile main.typ output.pdf
 # Continuous compilation / live-reload watcher
 typst watch main.typ output.pdf
 
+# Focus the live preview on one declared chapter
+typst watch --input chapters=tutorial main.typ preview.pdf
+
 # Open in VS Code with the Typst LSP / Typst Preview extensions:
 code .
 ```
+
+### Focused Chapter Previews
+
+Keep one chapter per file and declare the chapter files once in `main.typ`. The IDs are stable preview names; they do not need to match the visible chapter titles.
+
+```typst
+#import "template.typ": conf, include-chapters
+
+// Profile setup and #show rule omitted here for brevity.
+
+#include-chapters((
+  (id: "foundations", path: "/chapters/foundations.typ"),
+  (id: "algorithms", path: "/chapters/algorithms.typ"),
+  (id: "appendix", path: "/chapters/appendix.typ"),
+))
+```
+
+With no `chapters` input, normal compilation still includes the complete document. Pass one ID to focus the preview, or a comma-separated list to preview several chapters while preserving their manifest order:
+
+```bash
+# One chapter
+typst watch --input chapters=algorithms main.typ preview.pdf
+
+# Several chapters
+typst watch --input chapters=foundations,appendix main.typ preview.pdf
+
+# Explicitly select the complete document
+typst watch --input chapters=all main.typ output.pdf
+```
+
+Unknown IDs stop compilation and list the available IDs, so a typo cannot silently produce an empty preview. The command-line selection is not stored in the project and therefore never creates a Git change.
+
+For an existing notes repository, pull this template update normally and make the one-time `main.typ` migration from individual `#include` statements to `#include-chapters(...)`. Future selector improvements then arrive with ordinary template updates; each project only maintains its own chapter manifest.
+
+### Automated PDF Artifact
+
+Every push of one or more commits to GitHub triggers `.github/workflows/build-pdf.yml`. The workflow compiles the complete document and uploads `Typist_Template-PDF` to the workflow run for 30 days. It has read-only repository access and never commits the PDF. Local PDFs and the `build/`, `out/`, and `tmp/` directories are ignored by Git.
 
 ---
 
@@ -30,7 +72,7 @@ Typist_Template/
 ├── configs/                          # Layout and design token profiles
 │   ├── exam_notes_horizontal.typ     # 4-Column A4 Landscape (High-density cheat sheet)
 │   └── summary_vertical.typ          # 1-Column A4 Portrait (Technical summary)
-├── template.typ                      # Core layout engine, components, and lexer
+├── template.typ                      # Core layout engine, chapter selector, components, and lexer
 ├── main.typ                          # Document entry point & profile binding
 ├── chapters/                         # Content modules
 │   └── tutorial.typ                  # Feature demonstration chapter
@@ -41,8 +83,8 @@ Typist_Template/
 
 ### Module Responsibilities
 
-- **`main.typ`**: Root compilation target. Imports the layout orchestrator `conf` and binds a concrete profile from `configs/` (with optional localized overrides).
-- **`template.typ`**: The engine implementation. Houses the dynamic multi-column background renderer, AST show rules, callout inheritance logic, custom code highlighting engine, and introspection-based metadata aggregation.
+- **`main.typ`**: Root compilation target. Binds a concrete profile from `configs/` and declares the chapter manifest.
+- **`template.typ`**: The engine implementation. Houses the chapter preview selector, dynamic multi-column background renderer, AST show rules, callout inheritance logic, custom code highlighting engine, and introspection-based metadata aggregation.
 - **`configs/`**: Export standalone Typst dictionaries defining design tokens (geometry, typography, spacing, colors, and badge metadata).
 
 ---
@@ -68,7 +110,7 @@ Profiles are immutable Typst dictionaries. Customization is achieved via diction
 
 #### Binding a Preset Profile in `main.typ`
 ```typst
-#import "template.typ": conf
+#import "template.typ": conf, include-chapters
 # select the print profile here
 #import "configs/summary_vertical.typ": print-profile
 
@@ -77,12 +119,14 @@ Profiles are immutable Typst dictionaries. Customization is achieved via diction
   doc,
 )
 
-#include "chapters/tutorial.typ"
+#include-chapters((
+  (id: "tutorial", path: "/chapters/tutorial.typ"),
+))
 ```
 
 #### Granular Overrides for Strict Page Budgeting
 ```typst
-#import "template.typ": conf
+#import "template.typ": conf, include-chapters
 #import "configs/exam_notes_horizontal.typ": print-profile
 
 // Extend the baseline profile with localized overrides
@@ -101,7 +145,9 @@ Profiles are immutable Typst dictionaries. Customization is achieved via diction
   doc,
 )
 
-#include "chapters/tutorial.typ"
+#include-chapters((
+  (id: "tutorial", path: "/chapters/tutorial.typ"),
+))
 ```
 
 
@@ -266,6 +312,7 @@ Each user repository can keep its own `origin` while tracking this repository th
   ```
 
 - Git may ask you to resolve merge conflicts when both the notes project and the template changed the same lines. After resolving them, complete the merge and push it to the notes repository.
+- When first pulling the focused-preview update, keep the notes project's own chapter files and convert its `main.typ` include list to the manifest shown under **Focused Chapter Previews**. This is a one-time project migration.
 
 ### Existing or GitHub-Generated Notes Repositories
 
@@ -283,3 +330,9 @@ Each user repository can keep its own `origin` while tracking this repository th
   git fetch template
   git merge template/main
   ```
+
+---
+
+## License
+
+The Typst implementation, automation, and repository documentation are available under the MIT License. The document text authored by Jens Albrecht is published with permission and is excluded from that software license. See [`LICENSE`](LICENSE) for the exact boundary. Content written in downstream notes projects remains under those projects' authors and chosen licenses.

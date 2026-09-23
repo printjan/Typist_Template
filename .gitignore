@@ -1,0 +1,8 @@
+# Generated documents and local build directories
+*.pdf
+build/
+out/
+tmp/
+
+# Operating-system metadata
+.DS_Store
