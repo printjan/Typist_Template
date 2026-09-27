@@ -577,6 +577,44 @@
   ]
 }
 
+// Front matter is deliberately not a heading, so chapter numbers and the outline
+// contain only the actual document chapters.
+#let front-matter-title(title, profile) = block(
+  width: 100%,
+  above: profile.heading-1-above,
+  below: profile.heading-1-below,
+  text(size: profile.heading-1-size, weight: profile.heading-weight, title),
+)
+
+#let cover-page(profile) = {
+  let authors = profile.at("cover-authors", default: ("Author Name",))
+  let author-line = if type(authors) == array { authors.join(", ") } else { authors }
+  page(
+    paper: profile.paper,
+    flipped: profile.at("page-flipped", default: false),
+    columns: 1,
+    margin: 20mm,
+    background: none,
+    foreground: none,
+  )[
+    #align(center + horizon)[
+      #block(width: 85%)[
+        #align(center)[
+          #text(size: 30pt, weight: "bold")[#profile.at("cover-title", default: "Document Title")]
+          #v(8mm)
+          #text(size: 16pt)[#profile.at("cover-subtitle", default: "Document Subtitle")]
+          #v(25mm)
+          #text(size: 12pt)[#author-line]
+          #v(4mm)
+          #text(size: 11pt)[#profile.at("cover-organization", default: "Organization")]
+          #v(12mm)
+          #text(size: 10pt)[#profile.at("cover-date", default: datetime.today().display("[year]-[month padding:zero]-[day padding:zero]"))]
+        ]
+      ]
+    ]
+  ]
+}
+
 // Document configuration and layout engine
 #let conf(
   profile: default-profile,
@@ -602,6 +640,7 @@
   set page(
     paper: profile.paper,
     flipped: is-flipped,
+    columns: profile.column-count,
     margin: profile.page-margin,
     background: {
       if profile.column-count > 1 {
@@ -635,6 +674,7 @@
       }
     },
   )
+  set columns(gutter: profile.column-gap)
 
   set text(
     font: profile.body-font,
@@ -675,14 +715,17 @@
     if show-rule and w != none { w } else { none }
   }
 
-  show heading.where(level: 1): it => render-heading(
-    it,
-    size: profile.heading-1-size,
-    above: profile.heading-1-above,
-    below: profile.heading-1-below,
-    rule-width: get-heading-rule(1),
-    profile: profile,
-  )
+  show heading.where(level: 1): it => {
+    if profile.at("chapters-new-page", default: false) { pagebreak(weak: true) }
+    render-heading(
+      it,
+      size: profile.heading-1-size,
+      above: profile.heading-1-above,
+      below: profile.heading-1-below,
+      rule-width: get-heading-rule(1),
+      profile: profile,
+    )
+  }
   show heading.where(level: 2): it => render-heading(
     it,
     size: profile.heading-2-size,
@@ -870,8 +913,23 @@
     )
   }
 
-  columns(profile.column-count, gutter: profile.column-gap)[
+  if profile.at("show-cover", default: false) { cover-page(profile) }
+
+  [
     #_current-profile.update(profile)
+    #if profile.at("show-contents", default: false) {
+      let title = profile.at("contents-title", default: auto)
+      if title == auto {
+        title = if profile.body-lang == "de" { [Inhaltsverzeichnis] } else { [Contents] }
+      }
+      front-matter-title(title, profile)
+      outline(title: none, depth: profile.at("contents-depth", default: 2))
+    }
+    #if profile.at("show-todos-summary", default: false) {
+      let title = if profile.body-lang == "de" { [TODO-Übersicht] } else { [TODO Overview] }
+      front-matter-title(title, profile)
+      render-todo-list(profile: profile)
+    }
     #doc
   ]
 }

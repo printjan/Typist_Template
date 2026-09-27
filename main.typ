@@ -7,6 +7,14 @@
 //   body-size: 4.6pt,
 //   body-leading: 2.1pt,
 //   paragraph-spacing: 3.2pt,
+//   show-contents: true,
+//   chapters-new-page: true,
+//   show-cover: true,
+//   cover-title: "Document Title",
+//   cover-subtitle: "Document Subtitle",
+//   cover-authors: ("First Author", "Second Author"),
+//   cover-date: "27 September 2026",
+//   cover-organization: "Organization",
 // )
 
 #show: doc => conf(

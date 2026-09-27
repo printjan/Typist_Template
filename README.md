@@ -150,6 +150,33 @@ Profiles are immutable Typst dictionaries. Customization is achieved via diction
 ))
 ```
 
+### Contents, TODO Overview, Chapter Pages, and Cover
+
+The English term for *Inhaltsverzeichnis* is **table of contents**. Set `show-contents: true` to place one before the automatically generated TODO overview. Its entries use Typst's built-in PDF links, so clicking a chapter or subchapter in the exported PDF jumps to that heading. `contents-depth` controls how many heading levels appear (default: `2`). The title follows `body-lang` (`Contents` for English and `Inhaltsverzeichnis` for German), or can be set with `contents-title`.
+
+`show-todos-summary` controls the TODO overview at the start of the document. It is enabled by default in both profiles and now works without adding `chapters/todos.typ` to the chapter manifest. Turn it off if you want no overview, or if you include that file manually in an existing project.
+
+Set `chapters-new-page: true` to start each level-1 chapter on a fresh page. The cover, contents, and TODO overview are front matter and do not consume chapter numbers. The page break option also works in the four-column exam profile.
+
+Set `show-cover: true` to add a separate, single-column title page before the contents and TODO overview. The cover has no column rules or page number. Fill all five cover fields in a profile override in `main.typ`:
+
+```typst
+#import "configs/summary_vertical.typ": print-profile as base-profile
+#let print-profile = base-profile + (
+  show-cover: true,
+  cover-title: "Technical Summary",
+  cover-subtitle: "Foundations and Applications",
+  cover-authors: ("Ada Author", "Bert Writer"),
+  cover-date: "27 September 2026",
+  cover-organization: "Example Institute",
+  show-contents: true,
+  contents-depth: 2,
+  chapters-new-page: true,
+)
+```
+
+All three new switches default to `false`, so you can enable them independently. The cover date defaults to the compilation date when you do not override it.
+
 
 
 ---
@@ -239,12 +266,10 @@ SELECT ?prof ?name WHERE {
 The TODO subsystem tracks actionable work items across distributed chapter files without manual indexing.
 
 - **`#todo[Description]`**: Steps an internal counter, writes structured `metadata` into the document graph, renders a labeled reference anchor, and draws an inline notification box.
-- **`#render-todo-list()`**: Queries the document AST via `context`, extracts all TODO metadata entries, resolves the nearest enclosing Chapter index (`query(selector(heading.where(level: 1)).before(loc))`), and renders a dotted leader index with hyperlinked targets.
+- **`#render-todo-list()`**: Queries the document AST via `context`, extracts all TODO metadata entries, resolves the nearest enclosing Chapter index (`query(selector(heading.where(level: 1)).before(loc))`), and renders a dotted leader index with hyperlinked targets. `conf` places this list after the optional contents automatically when `show-todos-summary` is enabled.
 
 ```typst
 #import "../template.typ": todo, render-todo-list
-// Aggregate all document TODO items into a table of contents
-#render-todo-list()
 // In-text declaration
 #todo[Verify formal proof for lemma 2.4]
 ```

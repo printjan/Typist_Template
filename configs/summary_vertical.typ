@@ -17,6 +17,18 @@
   page-number-offset: (x: 1.4mm, y: 0.8mm), // Top-right offset coordinates
   page-number-color: luma(70),
 
+  // Optional front matter and chapter pagination
+  show-cover: false, // One-page title cover before all other content
+  cover-title: "Document Title",
+  cover-subtitle: "Document Subtitle",
+  cover-authors: ("Author Name",), // One or more names
+  cover-date: datetime.today().display("[year]-[month padding:zero]-[day padding:zero]"),
+  cover-organization: "Organization",
+  show-contents: false, // Linked table of contents before the TODO overview
+  contents-title: auto, // Localized from body-lang; override with custom content
+  contents-depth: 2, // Include chapter and subchapter headings
+  chapters-new-page: false, // Start every level-1 chapter on a fresh page
+
   // Body typography (Baseline 10.5pt, scaled by factor 2.1 relative to 5pt cheat sheets)
   body-font: "Libertinus Serif", // Primary font family
   body-size: 10.5pt, // Baseline body text font size
