@@ -87,14 +87,6 @@ Typist_Template/
 - **`template.typ`**: The engine implementation. Houses the chapter preview selector, dynamic multi-column background renderer, AST show rules, callout inheritance logic, custom code highlighting engine, and introspection-based metadata aggregation.
 - **`configs/`**: Export standalone Typst dictionaries defining design tokens (geometry, typography, spacing, colors, and badge metadata).
 
-### Start a new document
-
-1. Create your project from the template and keep the template source available for updates.
-2. Put source-derived content in `chapters/` and create `assets/` when figures or other files are needed.
-3. Replace the tutorial entry in `main.typ` with entries for the real content files.
-4. Select a profile and check its generated cover, contents page, TODO overview, and heading numbering. Override any feature that would add material absent from the source.
-5. Run `typst compile main.typ output.pdf`.
-
 ---
 
 ## Configuration & Profile Engine
