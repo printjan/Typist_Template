@@ -28,12 +28,12 @@ jobs:
         run: mkdir -p build
 
       - name: Compile PDF
-        run: typst compile main.typ build/Typist_Template.pdf
+        run: typst compile main.typ build/Typst_Template.pdf
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v7
         with:
-          name: Typist_Template-PDF
-          path: build/Typist_Template.pdf
+          name: Typst_Template-PDF
+          path: build/Typst_Template.pdf
           if-no-files-found: error
           retention-days: 30

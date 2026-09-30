@@ -59,7 +59,7 @@ For an existing notes repository, pull this template update normally and make th
 
 ### Automated PDF Artifact
 
-Every push of one or more commits to GitHub triggers `.github/workflows/build-pdf.yml`. The workflow compiles the complete document and uploads `Typist_Template-PDF` to the workflow run for 30 days. It has read-only repository access and never commits the PDF. Local PDFs and the `build/`, `out/`, and `tmp/` directories are ignored by Git.
+Every push of one or more commits to GitHub triggers `.github/workflows/build-pdf.yml`. The workflow compiles the complete document and uploads `Typst_Template-PDF` to the workflow run for 30 days. It has read-only repository access and never commits the PDF. Local PDFs and the `build/`, `out/`, and `tmp/` directories are ignored by Git.
 
 ---
 
@@ -68,7 +68,7 @@ Every push of one or more commits to GitHub triggers `.github/workflows/build-pd
 The repository enforces a decoupled architecture separating structural styling, configuration state, and document content.
 
 ```text
-Typist_Template/
+Typst_Template/
 ├── configs/                          # Layout and design token profiles
 │   ├── exam_notes_horizontal.typ     # 4-Column A4 Landscape (High-density cheat sheet)
 │   └── summary_vertical.typ          # 1-Column A4 Portrait (Technical summary)
@@ -307,7 +307,7 @@ Each user repository can keep its own `origin` while tracking this repository th
 - Clone this repository so your project and the template start with shared Git history:
 
   ```bash
-  git clone https://github.com/printjan/Typist_Template.git My_Notes
+  git clone https://github.com/printjan/Typst_Template.git My_Notes
   cd My_Notes
   git remote rename origin template
   ```
@@ -352,7 +352,7 @@ Each user repository can keep its own `origin` while tracking this repository th
 - Repositories created with GitHub's **Use this template** button have independent Git history. Add this repository as a remote and allow unrelated histories during the first merge only:
 
   ```bash
-  git remote add template https://github.com/printjan/Typist_Template.git
+  git remote add template https://github.com/printjan/Typst_Template.git
   git fetch template
   git merge template/main --allow-unrelated-histories
   ```
