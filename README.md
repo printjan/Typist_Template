@@ -366,6 +366,29 @@ Each user repository can keep its own `origin` while tracking this repository th
 
 ---
 
+## Optional AI notes workflows
+
+The shared [Typst AI package](https://github.com/printjan/personal-ai-knowledge-base/tree/main/typst-ai)
+and its user-level skills are maintained in the personal AI knowledge base.
+Install them once per machine. Existing `main.typ` manifests, including legacy
+direct chapter includes, are sufficient for AI discovery and extraction;
+no per-instance AI metadata migration is required. The focused-preview manifest
+migration described above serves the preview feature independently of AI search.
+
+Only declared content in `chapters/` is searchable. Root documents, undeclared
+chapters, and raw inbox captures stay outside the index. The `typst-inbox`
+workflow creates a project-local `inbox/` on the first capture, preserves the
+raw wording, and places processed content into declared chapters. No empty
+inbox folder is needed in this template.
+
+Use `recall`, `place`, `typst-review`, `typst-overlap`, `typst-inbox`,
+`typst-study`, and `typst-manage` through a compatible editor agent. Source
+edits require a clean Git worktree, complete compilation, and one reversible
+commit per workflow or overlap batch. Keep indexes, models, and audit ledgers
+in local machine storage outside Git and synced note folders. Installation
+does not prove a live editor connection: verify a root-bound MCP call and
+project isolation before claiming an editor is ready.
+
 ## License
 
 The Typst implementation, automation, and repository documentation are available under the MIT License. The document text authored by Jens Albrecht is published with permission and is excluded from that software license. See [`LICENSE`](LICENSE) for the exact boundary. Content written in downstream notes projects remains under those projects' authors and chosen licenses.
